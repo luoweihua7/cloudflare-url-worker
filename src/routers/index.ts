@@ -9,6 +9,6 @@ api.use(router);
 u.use(router);
 
 // Fallback router for 404
-router.all('*', () => new Response('Not Found.', { status: 404 }));
+router.all('*', () => new Response('404 Not Found!', { status: 404 }));
 
 export default router;

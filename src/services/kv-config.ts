@@ -1,27 +1,28 @@
 export default class KVConfig {
-  constructor(kv: KVNamespace) {
+  constructor(kv: KVNamespace, prefix?: string) {
     this.kv = kv;
+    this.prefix = prefix;
   }
 
   async get(key: string): Promise<string | null> {
-    return await this.kv.get(key);
+    return await this.kv.get(`${this.prefix}${key}`);
   }
 
   async set(key: string, value: string): Promise<void> {
-    await await this.kv.put(key, value);
+    await await this.kv.put(`${this.prefix}${key}`, value);
   }
 
   async delete(key: string): Promise<void> {
-    await await this.kv.delete(key);
+    await await this.kv.delete(`${this.prefix}${key}`);
   }
 
   /**
    * 列出所有符合条件的键
-   * @param prefix {string} 可以用来过滤所有键的前缀
    * @param limit [number] 限制返回的键的数量
    */
-  async list(prefix: string, limit?: number): Promise<string[]> {
+  async list(limit?: number): Promise<string[]> {
     const keys = [];
+    const { prefix } = this;
     let cursor = '';
     let fullfilled = false;
     let completed = false;
