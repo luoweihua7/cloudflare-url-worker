@@ -1,11 +1,8 @@
 import KVConfig from "./kv-config"
 
 class ApiService {
-  PREFIX = 'SHORT_URL_KEY:';
-
-
-  static getKV(env) {
-    return new KVConfig(env.UrlKV, this.PREFIX);
+  static getKV(env: Env) {
+    return new KVConfig(env.UrlKV);
   }
 
   static responseJSON(data: any) {
@@ -19,11 +16,18 @@ class ApiService {
 
   async add(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const kv = ApiService.getKV(env);
+    const uri = new URL(request.url);
     const { key, value } = await request.json();
+
+    if (key.startsWith('/')) {
+      return ApiService.responseJSON({ code: -400, msg: `key should not start with "/"` })
+    }
+
     console.log(`/api/add key="${key}", value="${value}"`)
     const ret = await kv.set(key, value)
+    const url = `${uri.protocol}//${uri.hostname}/u/${key}`
 
-    return ApiService.responseJSON({ code: 0, data: { key, value, ret } })
+    return ApiService.responseJSON({ code: 0, data: { key, url } })
   }
 
   async get(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {

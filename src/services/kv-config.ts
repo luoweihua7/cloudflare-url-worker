@@ -1,19 +1,22 @@
+import config from '../config';
+
+const prefix = config.KEY_PREFIX;
+
 export default class KVConfig {
-  constructor(kv: KVNamespace, prefix?: string) {
+  constructor(kv: KVNamespace) {
     this.kv = kv;
-    this.prefix = prefix;
   }
 
   async get(key: string): Promise<string | null> {
-    return await this.kv.get(`${this.prefix}${key}`);
+    return await this.kv.get(`${prefix}${key}`);
   }
 
   async set(key: string, value: string): Promise<void> {
-    await await this.kv.put(`${this.prefix}${key}`, value);
+    await await this.kv.put(`${prefix}${key}`, value);
   }
 
   async delete(key: string): Promise<void> {
-    await await this.kv.delete(`${this.prefix}${key}`);
+    await await this.kv.delete(`${prefix}${key}`);
   }
 
   /**
@@ -22,7 +25,6 @@ export default class KVConfig {
    */
   async list(limit?: number): Promise<string[]> {
     const keys = [];
-    const { prefix } = this;
     let cursor = '';
     let fullfilled = false;
     let completed = false;
