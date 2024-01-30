@@ -13,6 +13,6 @@ export default {
       return await fetch(url, request);
     }
 
-    // return new Response('404 Not Found', { status: 404 });
+    return new Response('404 Not Found.', { status: 404 });
   },
 };
